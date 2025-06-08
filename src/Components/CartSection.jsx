@@ -3,7 +3,15 @@ import { ShopContext } from "../assets/Context/ContextApi";
 import getimageUrl from "../data/ImageUrl";
 
 export default function CartSection() {
-  const { carts, RemoveFromCart } = useContext(ShopContext);
+  const {
+    carts,
+    RemoveFromCart,
+    subtotal,
+    itemIrement,
+    itemCount,
+    handleEditedTask,
+    itemDecrement,
+  } = useContext(ShopContext);
   return (
     <>
       <div className="lg:col-span-1">
@@ -33,13 +41,31 @@ export default function CartSection() {
                 <p className="text-sm text-gray-500">Size: {cart.size}</p>
                 <p className="text-sm text-gray-500">Color: {cart.color}</p>
                 <div className="flex justify-between items-center mt-2">
-                  <p className="font-bold">$145</p>
+                  <p className="font-bold">${cart.price}</p>
                   <div className="flex items-center space-x-2">
-                    <button className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center">
+                    <button
+                      onClick={() => {
+                        itemDecrement();
+                        handleEditedTask({
+                          ...cart,
+                          stock: cart.stock + itemCount - 1,
+                        });
+                      }}
+                      className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center"
+                    >
                       −
                     </button>
-                    <span className="text-sm">1</span>
-                    <button className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center">
+                    <span className="text-sm">{itemCount}</span>
+                    <button
+                      onClick={() => {
+                        itemIrement(cart, cart.stock);
+                        handleEditedTask({
+                          ...cart,
+                          stock: cart.stock - itemCount,
+                        });
+                      }}
+                      className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center"
+                    >
                       +
                     </button>
                   </div>
@@ -55,7 +81,7 @@ export default function CartSection() {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">$565</span>
+                  <span className="font-medium">${subtotal}</span>
                 </div>
                 <div className="flex justify-between text-red-500">
                   <span>Discount (-20%)</span>
